@@ -4,4 +4,4 @@ data/
 # Model folder generated when training is executed
 models/
 __pycache__/
-
+output.log
