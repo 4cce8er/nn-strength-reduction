@@ -7,8 +7,3 @@ qemu-arm \
 	-d plugin \
 	-D dump-$1.txt \
 	$1
-
-# -plugin /home/ale19/Programs/qemu-8.2.2/build/contrib/plugins/libexeclog.so \
-# -plugin /home/ale19/Programs/qemu-8.2.2/build/tests/plugin/libinsn.so \
-# -plugin /home/ale19/Programs/qemu-8.2.2/build/tests/plugin/libmem.so,inline=true \
-# -plugin /home/ale19/Programs/qemu-8.2.2/build/contrib/plugins/libhowvec.so

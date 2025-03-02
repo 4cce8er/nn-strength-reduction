@@ -15,7 +15,6 @@ qemu-x86_64 \
 #     -D dump-$1.txt \
 # 	$1
 
-# -plugin /home/ale19/Programs/qemu-8.2.2/build/contrib/plugins/libexeclog.so \
 	# -plugin ./qemu-bin/tests/plugin/libinsn.so \
 	# -plugin ./qemu-bin/build/contrib/plugins/libexeclog.so \
 	# -plugin ./qemu-bin/build/tests/plugin/libmem.so,inline=true,track=r,callback=true \

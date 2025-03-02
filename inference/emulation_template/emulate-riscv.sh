@@ -8,4 +8,3 @@
     -D dump-$1.txt \
 	$1
 
-# -plugin /home/ale19/Programs/qemu-8.2.2/build/contrib/plugins/libexeclog.so \
