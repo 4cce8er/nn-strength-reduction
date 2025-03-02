@@ -1,0 +1,84 @@
+diff --git a/contrib/plugins/Makefile b/contrib/plugins/Makefile
+index 78d1b4885c..0b64d2c1e3 100644
+--- a/contrib/plugins/Makefile
++++ b/contrib/plugins/Makefile
+@@ -18,8 +18,6 @@ NAMES += hotblocks
+ NAMES += hotpages
+ NAMES += howvec
+ 
+-NAMES += memcnt
+-
+ # The lockstep example communicates using unix sockets,
+ # and can't be easily made to work on windows.
+ ifneq ($(CONFIG_WIN32),y)
+diff --git a/contrib/plugins/memcnt.c b/contrib/plugins/memcnt.c
+deleted file mode 100644
+index 554bccf5d8..0000000000
+--- a/contrib/plugins/memcnt.c
++++ /dev/null
+@@ -1,64 +0,0 @@
+-/*
+- * Copyright (C) 2024, Alessio Petruccelli <ale.petru97@gmail.com>
+- *
+- * Count mememory accesses
+- *
+- * License: GNU GPL, version 2 or later.
+- *   See the COPYING file in the top-level directory.
+-*/
+- 
+-#include <qemu-plugin.h>
+-#include <stdint.h>
+-#include <glib.h>
+-
+-QEMU_PLUGIN_EXPORT int qemu_plugin_version = QEMU_PLUGIN_VERSION;
+-
+-typedef struct {
+-    uint64_t read;
+-    uint64_t write;
+-} mem_count_t;
+-
+-static mem_count_t counter = {0};
+-
+-static void vcpu_mem(unsigned int cpu_index, qemu_plugin_meminfo_t meminfo,
+-                     uint64_t vaddr, void *udata)
+-{
+-       if(qemu_plugin_mem_is_store(meminfo))
+-       {
+-           counter.write++;
+-       }
+-       else {
+-            counter.read++;
+-       }
+-}
+-
+-static void vcpu_tb_trans(qemu_plugin_id_t id, struct qemu_plugin_tb* tb)
+-{
+-    size_t n = qemu_plugin_tb_n_insns(tb);
+-    
+-    for(int i = 0; i < n; i++)
+-    {
+-        struct qemu_plugin_insn *insn = qemu_plugin_tb_get_insn(tb, i);
+-        // Register the callbacks
+-        qemu_plugin_register_vcpu_mem_cb(insn, vcpu_mem, QEMU_PLUGIN_CB_RW_REGS, QEMU_PLUGIN_MEM_RW, NULL);
+-    }
+-    
+-}
+-
+-static void plugin_exit(qemu_plugin_id_t id, void* p)
+-{
+-    g_autoptr(GString) out = g_string_new(NULL);
+-    
+-    g_string_append_printf(out, "READ Accesses: %lu\nWRITE Accesses: %lu\n", counter.read, counter.write);
+-    
+-    qemu_plugin_outs(out->str);
+-}
+-
+-
+-QEMU_PLUGIN_EXPORT int qemu_plugin_install(qemu_plugin_id_t id, const qemu_info_t* info, int argc, char** argv)
+-{
+-    /* Register translation block and exit callbacks */
+-    qemu_plugin_register_vcpu_tb_trans_cb(id, vcpu_tb_trans);
+-    qemu_plugin_register_atexit_cb(id, plugin_exit, NULL);
+-    return 0;   
+-}
+\ No newline at end of file
