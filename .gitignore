@@ -1,2 +1,7 @@
+# Data downloaded from tensorflow
 data/
 .python-version
+# Model folder generated when training is executed
+models/
+__pycache__/
+
